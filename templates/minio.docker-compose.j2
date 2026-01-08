@@ -16,7 +16,14 @@ services:
 
     volumes:
       - minio-data:/data
+    networks:
+      - common-backend-network
 
 volumes:
   minio-data:
+
+networks:
+  common-backend-network:
+    external: true
+
 

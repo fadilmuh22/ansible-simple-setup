@@ -1,0 +1,67 @@
+---
+- hosts: load
+  connection: local
+  become: yes
+
+  vars_files:
+    - vars.yml
+
+  vars:
+    # Use the correct python library for Ubuntu
+    postgresql_python_library: 'python-psycopg2'
+    
+    # Configure global settings like listen_addresses and port
+    postgresql_global_config_options:
+      - option: 'listen_addresses'
+        value: '*'
+      - option: 'port'
+        value: "{{ db_port | default(5432) }}"
+      - option: 'log_directory'
+        value: 'log'
+
+    # Define the database to be created
+    postgresql_databases:
+      - name: "{{ db_name }}"
+
+    # Define the user to be created
+    postgresql_users:
+      - name: "{{ db_user }}"
+        password: "{{ db_password }}"
+
+    # Grant all privileges on all tables in the public schema to the user.
+    postgresql_privs:
+      - db: "{{ db_name }}"
+        roles: "{{ db_user }}"
+        privs: "ALL"
+        objs: ALL_IN_SCHEMA
+
+    # Configure pg_hba.conf to allow remote connections for the user.
+    # WARNING: '0.0.0.0/0' allows connections from any IP.
+    # For production, you should restrict this to specific IP ranges.
+    postgresql_hba_entries:
+      # Default entries from the role for local access
+      - { type: local, database: all, user: postgres, auth_method: peer }
+      - { type: local, database: all, user: all, auth_method: peer }
+      - { type: host, database: all, user: all, address: '127.0.0.1/32', auth_method: md5 }
+      - { type: host, database: all, user: all, address: '::1/128', auth_method: md5 }
+      # Custom entry for remote access
+      - { type: host, database: "{{ db_name }}", user: "{{ db_user }}", address: '0.0.0.0/0', auth_method: md5 }
+
+  roles:
+    - geerlingguy.postgresql
+
+  post_tasks:
+    - name: "Copy migration script to server"
+      copy:
+        src: "{{ migration_sql_path }}"
+        dest: "/tmp/migration.sql"
+        owner: postgres
+        group: postgres
+        mode: '0644'
+      when: migration_sql_path is defined
+
+    - name: "Execute migration script"
+      shell: "psql -d {{ db_name }} -f /tmp/migration.sql"
+      become: yes
+      become_user: postgres
+      when: migration_sql_path is defined

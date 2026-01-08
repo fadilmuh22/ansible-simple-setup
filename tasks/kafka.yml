@@ -1,0 +1,16 @@
+---
+- name: Create directory for kafka docker-compose
+  ansible.builtin.file:
+    path: ~/docker-compose/kafka
+    state: directory
+    mode: '0755'
+
+- name: Template kafka docker-compose
+  ansible.builtin.template:
+    src: kafka.docker-compose.j2
+    dest: ~/docker-compose/kafka/docker-compose.yml
+
+- name: Run kafka docker-compose
+  ansible.builtin.command:
+    cmd: docker compose up -d
+    chdir: ~/docker-compose/kafka

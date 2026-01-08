@@ -1,0 +1,8 @@
+db_name: my_app_db
+db_port: 5433
+db_user: my_app_user
+db_password: secure_password_123
+redis_password: 'Redis2025'
+minio_user: 'admin'
+minio_password: 'AdminMinio2025'
+

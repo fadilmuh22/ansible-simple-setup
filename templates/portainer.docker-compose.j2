@@ -10,6 +10,13 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
+    networks:
+      - common-backend-network
 
 volumes:
   portainer_data:
+
+networks:
+  common-backend-network:
+    external: true
+

@@ -9,7 +9,7 @@ services:
     volumes:
       - redis-data:/data
     networks:
-      - redis-network
+      - common-backend-network
 
   redis-insight:
     image: redis/redisinsight:latest
@@ -22,13 +22,13 @@ services:
     volumes:
       - redis-insight-data:/db
     networks:
-      - redis-network
+      - common-backend-network
 
 volumes:
   redis-data:
   redis-insight-data:
 
 networks:
-  redis-network:
-    driver: bridge
+  common-backend-network:
+    external: true
 

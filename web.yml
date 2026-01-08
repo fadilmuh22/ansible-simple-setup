@@ -23,6 +23,9 @@
     - name: Include portainer tasks
       ansible.builtin.include_tasks: tasks/portainer.yml
 
+    - name: Include kafka tasks
+      ansible.builtin.include_tasks: tasks/kafka.yml
+
     - name: Include jaeger tasks
       ansible.builtin.include_tasks: tasks/jaeger.yml
 
