@@ -1,0 +1,34 @@
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: unless-stopped
+    command: "redis-server{% if redis_password is defined %} --requirepass {{ redis_password }}{% endif %}"
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - redis-network
+
+  redis-insight:
+    image: redis/redisinsight:latest
+    container_name: redis-insight
+    restart: unless-stopped
+    depends_on:
+      - redis
+    ports:
+      - "8001:5540"
+    volumes:
+      - redis-insight-data:/db
+    networks:
+      - redis-network
+
+volumes:
+  redis-data:
+  redis-insight-data:
+
+networks:
+  redis-network:
+    driver: bridge
+

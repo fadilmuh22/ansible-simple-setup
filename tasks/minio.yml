@@ -1,0 +1,16 @@
+---
+- name: Create directory for minio docker-compose
+  ansible.builtin.file:
+    path: ~/docker-compose/minio
+    state: directory
+    mode: '0755'
+
+- name: Template minio docker-compose
+  ansible.builtin.template:
+    src: minio.docker-compose.j2
+    dest: ~/docker-compose/minio/docker-compose.yml
+
+- name: Run minio docker-compose
+  ansible.builtin.command:
+    cmd: docker compose up -d
+    chdir: ~/docker-compose/minio

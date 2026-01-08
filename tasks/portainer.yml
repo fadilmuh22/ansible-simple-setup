@@ -1,0 +1,16 @@
+---
+- name: Create directory for portainer docker-compose
+  ansible.builtin.file:
+    path: ~/docker-compose/portainer
+    state: directory
+    mode: '0755'
+
+- name: Template portainer docker-compose
+  ansible.builtin.template:
+    src: portainer.docker-compose.j2
+    dest: ~/docker-compose/portainer/docker-compose.yml
+
+- name: Run portainer docker-compose
+  ansible.builtin.command:
+    cmd: docker compose up -d
+    chdir: ~/docker-compose/portainer

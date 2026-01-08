@@ -1,0 +1,12 @@
+services:
+  ansible-node:
+    container_name: ubuntu
+    image: ansible-ubuntu-test:latest
+    build:
+      context: .
+      dockerfile: ubuntu.ssh.dockerfile
+    privileged: true
+    ports:
+      - "33322:22" 
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

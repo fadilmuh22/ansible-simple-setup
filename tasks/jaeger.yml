@@ -1,0 +1,16 @@
+---
+- name: Create directory for jaeger docker-compose
+  ansible.builtin.file:
+    path: ~/docker-compose/jaeger
+    state: directory
+    mode: '0755'
+
+- name: Template jaeger docker-compose
+  ansible.builtin.template:
+    src: jaeger.docker-compose.j2
+    dest: ~/docker-compose/jaeger/docker-compose.yml
+
+- name: Run jaeger docker-compose
+  ansible.builtin.command:
+    cmd: docker compose up -d
+    chdir: ~/docker-compose/jaeger
