@@ -1,10 +1,6 @@
 - name: bootstrap app server
   hosts: web
   become: yes
-  vars:
-    redis_password: 'Redis2025'
-    minio_user: 'admin'
-    minio_password: 'AdminMinio2025'
   tasks:
     - name: Install Docker
       ansible.builtin.include_tasks: tasks/docker.yml
